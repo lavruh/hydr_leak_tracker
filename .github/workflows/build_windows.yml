@@ -29,4 +29,4 @@ jobs:
           uses: actions/upload-artifact@v1
           with:
             name: HydrLeakTracker-${{github.ref_name}}-windows.zip
-            files: build/windows/runner/Release/HydrLeakTracker-${{github.ref_name}}-windows.zip
+            path: build/windows/runner/Release/HydrLeakTracker-${{github.ref_name}}-windows.zip
