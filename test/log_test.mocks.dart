@@ -3,7 +3,8 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
+import 'dart:io' as _i3;
 
 import 'package:hydr_leak_tracker/data/IDbService.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
@@ -28,25 +29,28 @@ class MockIdbService extends _i1.Mock implements _i2.IdbService {
   }
 
   @override
-  _i3.Future<void> init({required String? path}) => (super.noSuchMethod(
-        Invocation.method(
-          #init,
-          [],
-          {#path: path},
-        ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+  dynamic init({
+    required _i3.File? file,
+    bool? hasHeaders,
+  }) =>
+      super.noSuchMethod(Invocation.method(
+        #init,
+        [],
+        {
+          #file: file,
+          #hasHeaders: hasHeaders,
+        },
+      ));
   @override
-  _i3.Stream<Map<String, dynamic>> getAllEntries() => (super.noSuchMethod(
+  _i4.Stream<Map<String, dynamic>> getAllEntries() => (super.noSuchMethod(
         Invocation.method(
           #getAllEntries,
           [],
         ),
-        returnValue: _i3.Stream<Map<String, dynamic>>.empty(),
-      ) as _i3.Stream<Map<String, dynamic>>);
+        returnValue: _i4.Stream<Map<String, dynamic>>.empty(),
+      ) as _i4.Stream<Map<String, dynamic>>);
   @override
-  _i3.Future<void> updateEntry({
+  _i4.Future<void> updateEntry({
     required Map<String, dynamic>? entry,
     required String? table,
   }) =>
@@ -59,11 +63,11 @@ class MockIdbService extends _i1.Mock implements _i2.IdbService {
             #table: table,
           },
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
   @override
-  _i3.Future<void> removeEntry({
+  _i4.Future<void> removeEntry({
     required String? id,
     required String? table,
   }) =>
@@ -76,7 +80,7 @@ class MockIdbService extends _i1.Mock implements _i2.IdbService {
             #table: table,
           },
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 }
