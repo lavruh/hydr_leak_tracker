@@ -11,37 +11,48 @@ class CsvDbService implements IdbService {
   @override
   Stream<Map<String, dynamic>> getAllEntries() async* {
     final csv = await file.readAsString();
-    final row = const CsvToListConverter().convert(csv);
+    final data = const CsvToListConverter().convert(csv);
     List? headers;
-    for (int i = 0; i < row.length; i++) {
+
+    for (int i = 0; i < data.length; i++) {
+      late Map<String, dynamic> out;
+      final row = data[i];
       if (_hasHeaders) {
         if (i == 0) {
-          headers = row[i];
+          headers = row;
+          continue;
         } else {
           if (headers == null) {
             throw Exception('Wrong file format');
           }
-          Map<String, dynamic> out = {};
-          for (int key = 0; key < headers.length; key++) {
-            if (key == 0) {
-              out[headers[key]] = '${row[i][key]}';
-            } else {
-              out[headers[key]] = row[i][key];
-            }
-          }
+          out = _convertCsvToMap(headers, row);
           cache.putIfAbsent(out.values.first, () => out);
-          yield out;
         }
       } else {
-        if (row[i].length >= 2) {
-          final key = row[i][0];
-          final value = row[i][1];
-          final map = {'$key': value};
+        if (data[i].length >= 2) {
+          final key = data[i][0];
+          final value = data[i][1];
+          out = {'$key': value};
           cache.putIfAbsent('$key', () => value);
-          yield map;
         }
       }
+      yield out;
     }
+  }
+
+  Map<String, dynamic> _convertCsvToMap(
+      List<dynamic> headers, List<dynamic> row) {
+    Map<String, dynamic> out = {};
+    for (int i = 0; i < headers.length; i++) {
+      final isFieldId = i == 0;
+      final field = headers[i];
+      if (isFieldId) {
+        out[field] = '${row[i]}';
+      } else {
+        out[field] = row[i];
+      }
+    }
+    return out;
   }
 
   @override
@@ -54,10 +65,7 @@ class CsvDbService implements IdbService {
   Future<void> removeEntry({required String id, required String table}) async {
     if (cache.containsKey(id)) {
       cache.remove(id);
-      List<List<dynamic>> out = [];
-      cache.forEach((key, value) {
-        out.add([key, value]);
-      });
+      final out = _convertCacheToCsv();
       await _writeDataToFile(out);
     } else {
       throw Exception('No entry with id: $id found');
@@ -68,23 +76,31 @@ class CsvDbService implements IdbService {
   Future<void> updateEntry(
       {required Map<String, dynamic> entry, required String table}) async {
     String key = '';
-    List<List<dynamic>> out = [];
     if (_hasHeaders == false) {
       key = entry.keys.first;
       cache[key] = entry.values.first;
-      cache.forEach((key, value) {
-        out.add([key, value]);
-      });
     } else {
-      print(entry);
       key = entry.values.first;
       cache[key] = entry;
-      out.add([...entry.keys]);
+    }
+    final out = _convertCacheToCsv();
+    await _writeDataToFile(out);
+  }
+
+  List<List<dynamic>> _convertCacheToCsv() {
+    List<List<dynamic>> out = [];
+    if(cache.isEmpty) return out;
+    if (_hasHeaders) {
+      out.add([...cache.values.first.keys]);
       cache.forEach((key, value) {
         out.add([...(value as Map<String, dynamic>).values]);
       });
+    } else {
+      cache.forEach((key, value) {
+        out.add([key, value]);
+      });
     }
-    await _writeDataToFile(out);
+    return out;
   }
 
   _writeDataToFile(List<List<dynamic>> out) async {

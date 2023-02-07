@@ -145,7 +145,7 @@ main() {
         volume: 2,
         remark: 'remark',
         operation: ShipOperation.discharging);
-    final entry2 = entry1.copyWith(sounding: 11);
+    final entry2 = entry1.copyWith(sounding: 11, id: 'e2');
     final data = [
       entry1.toMap().keys.toList(),
       entry1.toMap().values.toList(),
@@ -168,7 +168,10 @@ main() {
           entry2.toMap(),
         ]));
     await pumpEventQueue();
-
     await sut.removeEntry(id: entry1.id, table: 'sounding');
+
+    expect(sut.cache.length, 1);
+    verify(mockFile.writeAsString(
+        const ListToCsvConverter().convert([data[0], data[2]]))).called(1);
   });
 }
