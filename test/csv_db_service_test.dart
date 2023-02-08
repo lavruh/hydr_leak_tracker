@@ -19,10 +19,7 @@ main() {
 
   test('add data with field names', () async {
     final newEntry = LogEntry.now(
-        sounding: 1,
-        volume: 2,
-        remark: 'remark',
-        operation: ShipOperation.loaded);
+        volume: 2, remark: 'remark', operation: ShipOperation.loaded);
     when(mockFile.writeAsString(any))
         .thenAnswer((realInvocation) async => mockFile);
     sut.init(file: mockFile, hasHeaders: true);
@@ -114,11 +111,8 @@ main() {
 
   test('get all entries from file log', () async {
     final entry1 = LogEntry.now(
-        sounding: 1,
-        volume: 2,
-        remark: 'remark',
-        operation: ShipOperation.discharging);
-    final entry2 = entry1.copyWith(sounding: 11, id: 'e2');
+        volume: 2, remark: 'remark', operation: ShipOperation.discharging);
+    final entry2 = entry1.copyWith( id: 'e2');
     final data = [
       entry1.toMap().keys.toList(),
       entry1.toMap().values.toList(),
@@ -141,11 +135,8 @@ main() {
 
   test('remove entry', () async {
     final entry1 = LogEntry.now(
-        sounding: 1,
-        volume: 2,
-        remark: 'remark',
-        operation: ShipOperation.discharging);
-    final entry2 = entry1.copyWith(sounding: 11, id: 'e2');
+        volume: 2, remark: 'remark', operation: ShipOperation.discharging);
+    final entry2 = entry1.copyWith( id: 'e2');
     final data = [
       entry1.toMap().keys.toList(),
       entry1.toMap().values.toList(),

@@ -26,7 +26,6 @@ main() {
 
   test('add log entry', () async {
     final entry = LogEntry.now(
-        sounding: 1,
         volume: 0,
         remark: 'remark',
         operation: ShipOperation.loaded);
@@ -40,13 +39,12 @@ main() {
 
   test('update entry in log', () async {
     final entry = LogEntry.now(
-        sounding: 1,
         volume: 0,
         remark: 'remark',
         operation: ShipOperation.loaded);
     await ref.read(logProvider.notifier).updateEntry(entry);
     expect(ref.read(logProvider).length, 1);
-    final entryUpdated = entry.copyWith(sounding: 30);
+    final entryUpdated = entry.copyWith(remark: 'sssoooom');
     await ref.read(logProvider.notifier).updateEntry(entryUpdated);
     expect(ref.read(logProvider).length, 1);
     expect(ref.read(logProvider), contains(entryUpdated));
@@ -57,7 +55,6 @@ main() {
   test('remove entry', () async {
     final sut = ref.read(logProvider.notifier);
     final entry = LogEntry.now(
-        sounding: 1,
         volume: 0,
         remark: 'remark',
         operation: ShipOperation.loaded);
@@ -71,7 +68,6 @@ main() {
   test('getAll entries from db', () async {
     final sut = ref.read(logProvider.notifier);
     final entry = LogEntry.now(
-        sounding: 1,
         volume: 0,
         remark: 'remark',
         operation: ShipOperation.loaded);

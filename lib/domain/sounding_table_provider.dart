@@ -7,8 +7,8 @@ final soundingTableProvider = StateProvider<Map<int, int>>((ref) {
     await for (final data in db.getAllEntries()) {
       table.addAll(data.map(
         (key, value) {
-          assert(value is int);
-          return MapEntry(int.parse(key), value);
+          final int volume = int.tryParse('$value') ?? -1;
+          return MapEntry(int.parse(key), volume);
         },
       ));
     }

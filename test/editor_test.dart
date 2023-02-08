@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hydr_leak_tracker/domain/editor_provider.dart';
 import 'package:hydr_leak_tracker/domain/log_entry.dart';
 import 'package:hydr_leak_tracker/domain/sounding_table_provider.dart';
-import 'package:mockito/annotations.dart';
 
 main() {
   ProviderContainer ref = ProviderContainer();
@@ -18,7 +17,6 @@ main() {
   test('calculate volume by sounding', () {
     final sut = ref.read(editorProvider.notifier);
     final entry = LogEntry.now(
-        sounding: 0,
         volume: 0,
         remark: 'remark',
         operation: ShipOperation.discharging);
@@ -36,7 +34,6 @@ main() {
   test('calculate volume by ullage', () {
     final sut = ref.read(editorProvider.notifier);
     final entry = LogEntry.now(
-        sounding: 0,
         volume: 0,
         remark: 'remark',
         operation: ShipOperation.discharging);
@@ -47,5 +44,19 @@ main() {
 
     sut.calculateVolumeByUllage(ullage: ullage);
     expect(ref.read(editorProvider)?.volume, table[sounding]);
+  });
+
+  test('sounding ullage converting', () {
+    final sut = ref.read(editorProvider.notifier);
+    const ullage = 1;
+    final res = sut.convertSoundingUllage(ullage);
+    expect(res, table.keys.last - ullage);
+  });
+
+  test('find sounding by volume', () {
+    final sut = ref.read(editorProvider.notifier);
+    final entry = table.entries.elementAt(2);
+    final res = sut.findSoundingByVolume(volume: entry.value);
+    expect(res, entry.key);
   });
 }

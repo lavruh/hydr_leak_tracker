@@ -15,24 +15,66 @@ class EditorNotifier extends StateNotifier<LogEntry?> {
     state = val;
   }
 
+  updateState(LogEntry? val) {
+    ref.read(editorHasToSaveProvider.notifier).update((state) => true);
+    setState(val);
+  }
+
   save() {
     if (state != null) {
       ref.read(logProvider.notifier).updateEntry(state!);
+      ref.read(editorHasToSaveProvider.notifier).update((state) => false);
+      state = null;
     }
+  }
+
+  int get getSounding {
+    if (state != null) {
+      return findSoundingByVolume(volume: state!.volume.toInt());
+    }
+    return 0;
+  }
+
+  int get getUllage {
+    if (state != null) {
+      final sounding = findSoundingByVolume(volume: state!.volume.toInt());
+      return convertSoundingUllage(sounding);
+    }
+    return 0;
+  }
+
+  int findSoundingByVolume({required int volume}) {
+    final values = ref.read(soundingTableProvider);
+    try {
+      if (values.isNotEmpty) {
+        final tableEntry = values.entries.firstWhere((e) => e.value == volume);
+        return tableEntry.key;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return 0;
   }
 
   calculateVolume({required int sounding}) {
     final vol = (ref.read(soundingTableProvider)[sounding] ?? 0) * 1.0;
-    state = state?.copyWith(volume: vol);
+    updateState(state?.copyWith(volume: vol));
   }
 
   calculateVolumeByUllage({required int ullage}) {
-    final maxSounding = ref.read(soundingTableProvider).keys.last;
-    if(ullage < maxSounding){
-      calculateVolume(sounding: maxSounding - ullage);
+    calculateVolume(sounding: convertSoundingUllage(ullage));
+  }
+
+  int convertSoundingUllage(int val) {
+    final soundings = ref.read(soundingTableProvider).keys;
+    if (soundings.isNotEmpty) {
+      final maxSounding = soundings.last;
+      if (val < maxSounding) {
+        return maxSounding - val;
+      }
     }
-    else{
-      calculateVolume(sounding: 0);
-    }
+    return 0;
   }
 }
+
+final editorHasToSaveProvider = StateProvider<bool>((ref) => false);
