@@ -24,7 +24,7 @@ class LogEntry {
       : date = DateTime.now(),
         id = generateId(),
         volume = 0,
-        remark = '',
+        remark = ' ',
         operation = ShipOperation.empty;
 
   LogEntry copyWith({

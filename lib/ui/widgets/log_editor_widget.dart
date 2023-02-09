@@ -19,59 +19,66 @@ class LogEditorWidget extends ConsumerWidget {
     if (entry == null) {
       return Container();
     }
+    final formKey = GlobalKey<FormState>();
     return Card(
       elevation: 5,
       color: Colors.white60,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-          Flexible(
-              child: DateTimePickerButton(
-            date: entry.date,
-            onChanged: (DateTime newDate) =>
-                editor.updateState(entry.copyWith(date: newDate)),
-          )),
-          Flexible(
-              flex: 1,
-              child: DataInputField(
-                initValue: '${editor.getSounding}',
-                labelText: 'Sounding [mm]',
-                onConfirmedInt: (sounding) =>
-                    editor.calculateVolume(sounding: sounding),
-              )),
-          Flexible(
-              flex: 1,
-              child: DataInputField(
-                initValue: '${editor.getUllage}',
-                labelText: 'Ullage [mm]',
-                onConfirmedInt: (ullage) =>
-                    editor.calculateVolumeByUllage(ullage: ullage),
-              )),
-          Flexible(child: Text("${entry.volume} L")),
-          Flexible(
-              flex: 1,
-              child: ShipOperationSelectWidget(
-                operation: entry.operation,
-                onChanged: (int val) => editor.updateState(entry.copyWith(
-                  operation: ShipOperation.values[val],
+        child: Form(
+          key: formKey,
+          child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            Flexible(
+                child: DateTimePickerButton(
+              date: entry.date,
+              onChanged: (DateTime newDate) =>
+                  editor.updateState(entry.copyWith(date: newDate)),
+            )),
+            Flexible(
+                flex: 1,
+                child: DataInputField(
+                  formKey: formKey,
+                  initValue: '${editor.getSounding}',
+                  labelText: 'Sounding [mm]',
+                  onConfirmedInt: (sounding) =>
+                      editor.calculateVolume(sounding: sounding),
                 )),
-              )),
-          Flexible(
-              flex: 3,
-              child: DataInputField(
-                initValue: entry.remark,
-                labelText: 'Remark',
-                onConfirmedString: (String val) =>
-                    editor.updateState(entry.copyWith(remark: val)),
-              )),
-          ref.watch(editorHasToSaveProvider)
-              ? Flexible(
-                  child: IconButton(
-                  icon: const Icon(Icons.save),
-                  onPressed: () => _saveEntry(ref),
-                ))
-              : Container(),
-        ]),
+            Flexible(
+                flex: 1,
+                child: DataInputField(
+                  formKey: formKey,
+                  initValue: '${editor.getUllage}',
+                  labelText: 'Ullage [mm]',
+                  onConfirmedInt: (ullage) =>
+                      editor.calculateVolumeByUllage(ullage: ullage),
+                )),
+            Flexible(child: Text("${entry.volume} L")),
+            Flexible(
+                flex: 1,
+                child: ShipOperationSelectWidget(
+                  operation: entry.operation,
+                  onChanged: (int val) => editor.updateState(entry.copyWith(
+                    operation: ShipOperation.values[val],
+                  )),
+                )),
+            Flexible(
+                flex: 3,
+                child: DataInputField(
+                  formKey: formKey,
+                  initValue: entry.remark,
+                  labelText: 'Remark',
+                  onConfirmedString: (String val) =>
+                      editor.updateState(entry.copyWith(remark: val)),
+                )),
+            ref.watch(editorHasToSaveProvider)
+                ? Flexible(
+                    child: IconButton(
+                    icon: const Icon(Icons.save),
+                    onPressed: () => _saveEntry(ref),
+                  ))
+                : Container(),
+          ]),
+        ),
       ),
     );
   }

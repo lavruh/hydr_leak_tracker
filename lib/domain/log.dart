@@ -16,6 +16,7 @@ class LogNotifier extends StateNotifier<List<LogEntry>> {
 
   setDb(IdbService value) {
     _db = value;
+    getAllEntries();
   }
 
   getAllEntries() async {
