@@ -5,6 +5,7 @@ import 'package:hydr_leak_tracker/domain/log.dart';
 import 'package:hydr_leak_tracker/domain/log_entry.dart';
 import 'package:hydr_leak_tracker/domain/sounding_table_provider.dart';
 import 'package:hydr_leak_tracker/ui/settings_screen.dart';
+import 'package:hydr_leak_tracker/ui/widgets/graphic_widget.dart';
 import 'package:hydr_leak_tracker/ui/widgets/log_editor_widget.dart';
 import 'package:hydr_leak_tracker/ui/widgets/log_entry_widget.dart';
 
@@ -18,6 +19,7 @@ class LogScreen extends ConsumerWidget {
     ref.read(soundingTableProvider);
     return Scaffold(
       appBar: AppBar(
+        // title: Text(Platform.operatingSystemVersion),
         actions: [
           IconButton(
               onPressed: () {
@@ -49,6 +51,7 @@ class LogScreen extends ConsumerWidget {
                     ))
                 .toList(),
           )),
+          const Flexible(child: GraphicWidget()),
         ],
       ),
     );

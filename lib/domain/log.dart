@@ -20,11 +20,16 @@ class LogNotifier extends StateNotifier<List<LogEntry>> {
   }
 
   getAllEntries() async {
-    if(_db!=null) {
+    if (_db != null) {
       await for (final map in _db!.getAllEntries()) {
         state = [...state, LogEntry.fromMap(map)];
       }
     }
+    List<LogEntry> tmp = state;
+    tmp.sort((a, b) {
+      return a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch;
+    });
+    state = [...tmp];
   }
 
   updateEntry(LogEntry entry) async {
@@ -34,6 +39,9 @@ class LogNotifier extends StateNotifier<List<LogEntry>> {
     } else {
       state.removeAt(index);
       state.insert(index, entry);
+      state.sort((a, b) {
+        return a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch;
+      });
       state = [...state];
     }
     await _db?.updateEntry(entry: entry.toMap(), table: table);

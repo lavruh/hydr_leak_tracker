@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Hydraulic leak tracker',
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.yellow,
       ),
       home: const LogScreen(),
     );

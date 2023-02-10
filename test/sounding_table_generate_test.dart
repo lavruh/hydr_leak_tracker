@@ -5,8 +5,42 @@ import 'package:flutter_test/flutter_test.dart';
 
 main() {
   test('generate table', () {
-    final soundings = [0, 343, 654];
-    final volumes = [0, 1000, 2000];
+    final soundings = [
+      0,
+      324,
+      648,
+      972,
+      1060,
+      1145,
+      1232,
+      1316,
+      1402,
+      1489,
+      1574,
+      1659,
+      1749,
+      1859,
+      1903,
+      1946
+    ];
+    final volumes = [
+      0,
+      1000,
+      2000,
+      3000,
+      4000,
+      5000,
+      6000,
+      7000,
+      8000,
+      9000,
+      10000,
+      11000,
+      12000,
+      13000,
+      14000,
+      15000
+    ];
     const precision = 100;
 
     final res = generateSoundingTable(
@@ -14,7 +48,7 @@ main() {
 
     expect(res.length, precision * (soundings.length - 1));
     final str = const ListToCsvConverter().convert(res);
-    File('path').writeAsString(str);
+    File('/home/lavruh/AndroidStudioProjects/hydr_leak_tracker/test/testdata/sounding_table.csv').writeAsString(str);
   });
 }
 
