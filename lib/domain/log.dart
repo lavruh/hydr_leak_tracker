@@ -51,4 +51,10 @@ class LogNotifier extends StateNotifier<List<LogEntry>> {
     state.removeWhere((e) => e.id == id);
     await _db?.removeEntry(id: id, table: table);
   }
+  
+  int getEntryIndex(int id){
+    return state.indexWhere((element) {
+      return element.date.millisecondsSinceEpoch == id;
+    });
+  }
 }

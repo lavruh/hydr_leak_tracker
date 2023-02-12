@@ -8,9 +8,9 @@ import 'package:hydr_leak_tracker/domain/settings_provider.dart';
 import 'package:intl/intl.dart';
 
 class GraphicWidget extends ConsumerWidget {
-  const GraphicWidget({
-    Key? key,
-  }) : super(key: key);
+  const GraphicWidget({Key? key, this.onTapValue}) : super(key: key);
+
+  final Function(int val)? onTapValue;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,6 +27,7 @@ class GraphicWidget extends ConsumerWidget {
                 color: Color(ref.watch(emptyEntriesColor)),
                 barWidth: 3,
                 isCurved: true,
+                curveSmoothness: 0.2,
                 spots: ref
                     .watch(filteredByOperationLogProvider(ShipOperation.empty))
                     .map((e) => FlSpot(
@@ -36,6 +37,7 @@ class GraphicWidget extends ConsumerWidget {
               LineChartBarData(
                 color: Color(ref.watch(loadedEntriesColor)),
                 barWidth: 3,
+                curveSmoothness: 0.2,
                 isCurved: true,
                 spots: ref
                     .watch(filteredByOperationLogProvider(ShipOperation.loaded))
@@ -47,6 +49,7 @@ class GraphicWidget extends ConsumerWidget {
                 color: Color(ref.watch(dredgingEntriesColor)),
                 barWidth: 3,
                 isCurved: true,
+                curveSmoothness: 0.2,
                 spots: ref
                     .watch(
                         filteredByOperationLogProvider(ShipOperation.dredging))
@@ -58,6 +61,7 @@ class GraphicWidget extends ConsumerWidget {
                 color: Color(ref.watch(dischargingEntriesColor)),
                 barWidth: 3,
                 isCurved: true,
+                curveSmoothness: 0.2,
                 spots: ref
                     .watch(filteredByOperationLogProvider(
                         ShipOperation.discharging))
@@ -73,10 +77,19 @@ class GraphicWidget extends ConsumerWidget {
               bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
                 showTitles: true,
-                // interval: 0.5,
                 getTitlesWidget: bottomTitleWidgets,
               )),
-            )),
+            ),
+            lineTouchData: LineTouchData(touchCallback: (event, resp) {
+              if (event is FlTapDownEvent) {
+                final dateVal = resp?.lineBarSpots?.first.x;
+                if (dateVal != null) {
+                  if (onTapValue != null) {
+                    onTapValue!(dateVal.toInt());
+                  }
+                }
+              }
+            })),
       ),
     );
   }
@@ -87,7 +100,7 @@ class GraphicWidget extends ConsumerWidget {
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 0,
+      space: 10,
       angle: 0.7,
       child: Text(
         DateFormat('dd-MM').format(date),
