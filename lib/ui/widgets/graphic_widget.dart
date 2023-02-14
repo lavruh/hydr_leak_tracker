@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,52 +24,11 @@ class GraphicWidget extends ConsumerWidget {
       child: LineChart(
         LineChartData(
             lineBarsData: [
-              LineChartBarData(
-                color: Color(ref.watch(emptyEntriesColor)),
-                barWidth: 3,
-                isCurved: true,
-                curveSmoothness: 0.2,
-                spots: ref
-                    .watch(filteredByOperationLogProvider(ShipOperation.empty))
-                    .map((e) => FlSpot(
-                        e.date.millisecondsSinceEpoch.toDouble(), e.volume))
-                    .toList(),
-              ),
-              LineChartBarData(
-                color: Color(ref.watch(loadedEntriesColor)),
-                barWidth: 3,
-                curveSmoothness: 0.2,
-                isCurved: true,
-                spots: ref
-                    .watch(filteredByOperationLogProvider(ShipOperation.loaded))
-                    .map((e) => FlSpot(
-                        e.date.millisecondsSinceEpoch.toDouble(), e.volume))
-                    .toList(),
-              ),
-              LineChartBarData(
-                color: Color(ref.watch(dredgingEntriesColor)),
-                barWidth: 3,
-                isCurved: true,
-                curveSmoothness: 0.2,
-                spots: ref
-                    .watch(
-                        filteredByOperationLogProvider(ShipOperation.dredging))
-                    .map((e) => FlSpot(
-                        e.date.millisecondsSinceEpoch.toDouble(), e.volume))
-                    .toList(),
-              ),
-              LineChartBarData(
-                color: Color(ref.watch(dischargingEntriesColor)),
-                barWidth: 3,
-                isCurved: true,
-                curveSmoothness: 0.2,
-                spots: ref
-                    .watch(filteredByOperationLogProvider(
-                        ShipOperation.discharging))
-                    .map((e) => FlSpot(
-                        e.date.millisecondsSinceEpoch.toDouble(), e.volume))
-                    .toList(),
-              ),
+              _chartData(ref, emptyEntriesColor, ShipOperation.empty),
+              _chartData(ref, loadedEntriesColor, ShipOperation.loaded),
+              _chartData(ref, dredgingEntriesColor, ShipOperation.dredging),
+              _chartData(
+                  ref, dischargingEntriesColor, ShipOperation.discharging),
             ],
             titlesData: FlTitlesData(
               topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -100,11 +60,28 @@ class GraphicWidget extends ConsumerWidget {
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 10,
-      angle: 0.7,
+      space: 8,
+      angle: math.pi / 4,
       child: Text(
-        DateFormat('dd-MM').format(date),
+        DateFormat('d-MM').format(date),
       ),
+    );
+  }
+
+  LineChartBarData _chartData(
+      WidgetRef ref,
+      StateNotifierProvider<SettingNotifier<int>, int> provider,
+      ShipOperation operation) {
+    return LineChartBarData(
+      color: Color(ref.watch(provider)),
+      barWidth: 3,
+      isCurved: true,
+      curveSmoothness: 0.2,
+      spots: ref
+          .watch(filteredByOperationLogProvider(operation))
+          .map(
+              (e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.volume))
+          .toList(),
     );
   }
 }

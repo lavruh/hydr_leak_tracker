@@ -29,7 +29,7 @@ class LogNotifier extends StateNotifier<List<LogEntry>> {
     tmp.sort((a, b) {
       return a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch;
     });
-    state = [...tmp];
+    state = [...tmp.reversed];
   }
 
   updateEntry(LogEntry entry) async {

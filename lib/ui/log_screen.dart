@@ -19,8 +19,6 @@ class LogScreen extends ConsumerWidget {
     ref.read(soundingTableProvider);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.yellow,
-        // title: Text(Platform.operatingSystemVersion),
         actions: [
           IconButton(
               onPressed: () {

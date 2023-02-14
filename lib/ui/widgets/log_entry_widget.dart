@@ -16,7 +16,7 @@ class LogEntryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: selectedColor,
+      textColor: selectedColor,
       title: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydr_leak_tracker/domain/settings_provider.dart';
 import 'package:hydr_leak_tracker/ui/utils/input_data_validators.dart';
 import 'package:hydr_leak_tracker/ui/widgets/setting_input_widget.dart';
+import 'package:hydr_leak_tracker/ui/widgets/settings_color_picker_widget.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -33,6 +34,30 @@ class SettingsScreen extends ConsumerWidget {
                   alarmLevelValidator: filePathValidator,
                   onSubmited: (val) =>
                       ref.read(logFilePath.notifier).setValue(val)),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SettingsColorPickerWidget(
+                      colorValueProvider: emptyEntriesColor,
+                      title: 'Empty',
+                    ),
+                    SettingsColorPickerWidget(
+                      colorValueProvider: loadedEntriesColor,
+                      title: 'Loaded',
+                    ),
+                    SettingsColorPickerWidget(
+                      colorValueProvider: dredgingEntriesColor,
+                      title: 'Dredging',
+                    ),
+                    SettingsColorPickerWidget(
+                      colorValueProvider: dischargingEntriesColor,
+                      title: 'Discharging',
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),

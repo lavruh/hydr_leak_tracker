@@ -18,7 +18,6 @@ class LogWidget extends ConsumerWidget {
     final log = ref.watch(logProvider);
     final scrollController = ref.read(logScrollControllerProvider);
     return ScrollablePositionedList.builder(
-      reverse: true,
       itemScrollController: scrollController,
       itemBuilder: (context, i) => LogEntryWidget(
         entry: log[i],
@@ -38,7 +37,6 @@ class LogWidget extends ConsumerWidget {
   }
 
   Color? _getEntryColor(int operation, WidgetRef ref) {
-    print(operation);
     if (operation == ShipOperation.loaded.index) {
       return Color(ref.watch(loadedEntriesColor));
     }
