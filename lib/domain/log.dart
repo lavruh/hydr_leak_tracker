@@ -25,24 +25,17 @@ class LogNotifier extends StateNotifier<List<LogEntry>> {
         state = [...state, LogEntry.fromMap(map)];
       }
     }
-    List<LogEntry> tmp = state;
-    tmp.sort((a, b) {
-      return a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch;
-    });
-    state = [...tmp.reversed];
+    _sortState();
   }
 
   updateEntry(LogEntry entry) async {
     final index = state.indexWhere((element) => element.id == entry.id);
     if (-1 == index) {
-      state = [...state, entry];
+      state = [entry, ...state];
     } else {
       state.removeAt(index);
       state.insert(index, entry);
-      state.sort((a, b) {
-        return a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch;
-      });
-      state = [...state];
+      _sortState();
     }
     await _db?.updateEntry(entry: entry.toMap(), table: table);
   }
@@ -51,10 +44,18 @@ class LogNotifier extends StateNotifier<List<LogEntry>> {
     state.removeWhere((e) => e.id == id);
     await _db?.removeEntry(id: id, table: table);
   }
-  
-  int getEntryIndex(int id){
+
+  int getEntryIndex(int id) {
     return state.indexWhere((element) {
       return element.date.millisecondsSinceEpoch == id;
     });
+  }
+
+  void _sortState() {
+    List<LogEntry> tmp = state;
+    tmp.sort((a, b) {
+      return b.date.millisecondsSinceEpoch - a.date.millisecondsSinceEpoch;
+    });
+    state = [...tmp];
   }
 }
