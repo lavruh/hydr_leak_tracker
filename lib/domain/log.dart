@@ -6,6 +6,7 @@ import 'package:hydr_leak_tracker/domain/log_entry.dart';
 final logProvider = StateNotifierProvider<LogNotifier, List<LogEntry>>((ref) {
   LogNotifier notifier = LogNotifier();
   ref.watch(logDbProvider).whenData((value) => notifier.setDb(value));
+  notifier.getAllEntries();
   return notifier;
 });
 
@@ -16,7 +17,6 @@ class LogNotifier extends StateNotifier<List<LogEntry>> {
 
   setDb(IdbService value) {
     _db = value;
-    getAllEntries();
   }
 
   getAllEntries() async {

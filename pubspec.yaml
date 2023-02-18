@@ -1,7 +1,7 @@
 name: hydr_leak_tracker
 description: A new Flutter project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.1.0+3
+version: 1.1.2+2
 
 environment:
   sdk: '>=2.19.0 <3.0.0'
@@ -31,8 +31,8 @@ flutter:
 
 
 flutter_icons:
-  image_path: "assets/icons8-hydraulic-engineering-64.png"
+  image_path: "assets/icons8-hydraulic-engineering-128.png"
   windows:
     generate: true
-    image_path: "assets/icons8-hydraulic-engineering-64.png"
-    icon_size: 64 # min:48, max:256, default: 48
+    image_path: "assets/icons8-hydraulic-engineering-128.png"
+    icon_size: 128 # min:48, max:256, default: 48

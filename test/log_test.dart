@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydr_leak_tracker/data/IDbService.dart';
 import 'package:hydr_leak_tracker/domain/log.dart';
-import 'package:hydr_leak_tracker/domain/log_db_provider.dart';
 import 'package:hydr_leak_tracker/domain/log_entry.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -17,18 +16,21 @@ main() {
   MockIdbService db = MockIdbService();
   ProviderContainer ref = ProviderContainer();
 
-  setUp(() {
+  final logProvider = StateNotifierProvider<LogNotifier, List<LogEntry>>((ref) {
+    LogNotifier notifier = LogNotifier();
+    return notifier;
+  });
+
+  setUp(() async {
     db = MockIdbService();
-    ref =
-        ProviderContainer(overrides: [logDbProvider.overrideWith((ref) => db)]);
+    ref = ProviderContainer(overrides: [logProvider]);
     ref.listen(logProvider, Listener(), fireImmediately: true);
+    await ref.read(logProvider.notifier).setDb(db);
   });
 
   test('add log entry', () async {
     final entry = LogEntry.now(
-        volume: 0,
-        remark: 'remark',
-        operation: ShipOperation.loaded);
+        volume: 0, remark: 'remark', operation: ShipOperation.loaded);
 
     await ref.read(logProvider.notifier).updateEntry(entry);
 
@@ -39,9 +41,7 @@ main() {
 
   test('update entry in log', () async {
     final entry = LogEntry.now(
-        volume: 0,
-        remark: 'remark',
-        operation: ShipOperation.loaded);
+        volume: 0, remark: 'remark', operation: ShipOperation.loaded);
     await ref.read(logProvider.notifier).updateEntry(entry);
     expect(ref.read(logProvider).length, 1);
     final entryUpdated = entry.copyWith(remark: 'sssoooom');
@@ -55,9 +55,7 @@ main() {
   test('remove entry', () async {
     final sut = ref.read(logProvider.notifier);
     final entry = LogEntry.now(
-        volume: 0,
-        remark: 'remark',
-        operation: ShipOperation.loaded);
+        volume: 0, remark: 'remark', operation: ShipOperation.loaded);
     await sut.updateEntry(entry);
     expect(ref.read(logProvider).length, 1);
     await sut.removeEntry(entry.id);
@@ -66,14 +64,14 @@ main() {
   });
 
   test('getAll entries from db', () async {
-    final sut = ref.read(logProvider.notifier);
     final entry = LogEntry.now(
-        volume: 0,
-        remark: 'remark',
-        operation: ShipOperation.loaded);
+        volume: 0, remark: 'remark', operation: ShipOperation.loaded);
     final entries = [entry, entry.copyWith(id: '2')];
     when(db.getAllEntries())
         .thenAnswer((_) => Stream.fromIterable(entries.map((e) => e.toMap())));
+
+    final sut = ref.read(logProvider.notifier);
+
     await sut.getAllEntries();
     expect(ref.read(logProvider).length, 2);
   });
