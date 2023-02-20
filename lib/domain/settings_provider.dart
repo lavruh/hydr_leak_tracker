@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,45 +24,7 @@ StateNotifierProvider<SettingNotifier<String>, String>((ref) {
   );
 });
 
-final dredgingEntriesColor =
-StateNotifierProvider<SettingNotifier<int>, int>((ref) {
-  final preferences = ref.watch(settingsProvider);
-  return SettingNotifier(
-    preferences: preferences.value,
-    key: 'dredgingEntriesColor',
-    defaultVal: Colors.green.value,
-  );
-});
 
-final emptyEntriesColor =
-StateNotifierProvider<SettingNotifier<int>, int>((ref) {
-  final preferences = ref.watch(settingsProvider);
-  return SettingNotifier(
-    preferences: preferences.value,
-    key: 'emptyEntriesColor',
-    defaultVal: Colors.blue.value,
-  );
-});
-
-final loadedEntriesColor =
-StateNotifierProvider<SettingNotifier<int>, int>((ref) {
-  final preferences = ref.watch(settingsProvider);
-  return SettingNotifier(
-    preferences: preferences.value,
-    key: 'loadedEntriesColor',
-    defaultVal: Colors.yellow.value,
-  );
-});
-
-final dischargingEntriesColor =
-StateNotifierProvider<SettingNotifier<int>, int>((ref) {
-  final preferences = ref.watch(settingsProvider);
-  return SettingNotifier(
-    preferences: preferences.value,
-    key: 'dischargingEntriesColor',
-    defaultVal: Colors.red.value,
-  );
-});
 
 class SettingNotifier<T> extends StateNotifier<T> {
   final SharedPreferences? preferences;

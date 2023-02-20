@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:hydr_leak_tracker/domain/log_entry.dart';
 import 'package:hydr_leak_tracker/ui/widgets/calculated_value.dart';
 
@@ -67,5 +68,27 @@ class LogAnalyse {
               value: e.y),
         )
         .toList();
+  }
+
+  static CalculatedValue averageLosesPerDay(var data) {
+    if (data is List<LogEntry>) {
+      return _averageLosesPerDay(_convertLogEntries(data));
+    }
+    if (data is List<CalculatedValue>) {
+      return _averageLosesPerDay(data);
+    }
+    if (data is List<FlSpot>) {
+      return _averageLosesPerDay(_convertFlSpots(data));
+    }
+    throw Exception('Input data format is not supported');
+  }
+
+  static CalculatedValue _averageLosesPerDay(List<CalculatedValue> data) {
+    final days = DateTimeRange(start: data.first.date, end: data.last.date)
+        .duration
+        .inDays;
+    return CalculatedValue(
+        date: data.last.date,
+        value: _average(_calcLosesPerEntry(data)).value / days);
   }
 }

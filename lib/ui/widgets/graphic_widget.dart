@@ -6,7 +6,10 @@ import 'package:hydr_leak_tracker/domain/log.dart';
 import 'package:hydr_leak_tracker/domain/log_analyse_provider.dart';
 import 'package:hydr_leak_tracker/domain/log_entry.dart';
 import 'package:hydr_leak_tracker/domain/separated_log_providers.dart';
-import 'package:hydr_leak_tracker/domain/settings_provider.dart';
+import 'package:hydr_leak_tracker/domain/settings/settings_discharging_graphic.dart';
+import 'package:hydr_leak_tracker/domain/settings/settings_dredging_graphic.dart';
+import 'package:hydr_leak_tracker/domain/settings/settings_empty_graphic.dart';
+import 'package:hydr_leak_tracker/domain/settings/settings_loaded_graphic.dart';
 import 'package:intl/intl.dart';
 
 class GraphicWidget extends ConsumerWidget {
@@ -25,14 +28,22 @@ class GraphicWidget extends ConsumerWidget {
       child: LineChart(
         LineChartData(
             lineBarsData: [
-              _chartData(ref, ShipOperation.empty),
-              _chartData(ref, ShipOperation.loaded),
-              _chartData(ref, ShipOperation.dredging),
-              _chartData(ref, ShipOperation.discharging),
-              _trendLineData(ref, ShipOperation.empty),
-              _trendLineData(ref, ShipOperation.loaded),
-              _trendLineData(ref, ShipOperation.dredging),
-              _trendLineData(ref, ShipOperation.discharging),
+              if (ref.watch(emptyShowLine))
+                _chartData(ref, ShipOperation.empty),
+              if (ref.watch(loadedShowLine))
+                _chartData(ref, ShipOperation.loaded),
+              if (ref.watch(dredgingShowLine))
+                _chartData(ref, ShipOperation.dredging),
+              if (ref.watch(dischargingShowLine))
+                _chartData(ref, ShipOperation.discharging),
+              if (ref.watch(emptyShowTrend))
+                _trendLineData(ref, ShipOperation.empty),
+              if (ref.watch(loadedShowTrend))
+                _trendLineData(ref, ShipOperation.loaded),
+              if (ref.watch(dredgingShowTrend))
+                _trendLineData(ref, ShipOperation.dredging),
+              if (ref.watch(dischargingShowTrend))
+                _trendLineData(ref, ShipOperation.discharging),
             ],
             titlesData: FlTitlesData(
                 topTitles:
@@ -58,22 +69,27 @@ class GraphicWidget extends ConsumerWidget {
                 fitInsideHorizontally: true,
                 getTooltipItems: (data) {
                   return data.map((e) {
-                    String data = e.y.toString();
+                    String data = e.y.toStringAsFixed(1);
                     final spots = e.bar.spots;
                     final isNotTrendLine = e.bar.barWidth > 2;
                     if (isNotTrendLine) {
                       if (e.spotIndex > 0) {
                         final delta = LogAnalyse.spotsDelta(
                             spots[e.spotIndex - 1], spots[e.spotIndex]);
-                        data += ' \n ∆$delta';
+                        data += ' \n ∆ ${delta.toStringAsFixed(1)}';
                       }
                       if (e.spotIndex == spots.length - 1) {
                         final averageLoses = LogAnalyse.average(
                             LogAnalyse.calcLosesPerEntry(spots));
-                        data += "\n Average ∆ ${averageLoses.value}";
+                        data +=
+                            "\n Average ∆ ${averageLoses.value.toStringAsFixed(1)}";
+                        final averageLosesPerDay = LogAnalyse.average(
+                            LogAnalyse.calcLosesPerEntry(spots));
+                        data +=
+                            "\n Average ∆ / day ${averageLosesPerDay.value.toStringAsFixed(1)}";
                       }
                     } else {
-                      data = 'Average $data';
+                      data = 'Average volume $data';
                     }
 
                     return LineTooltipItem(data, TextStyle(color: e.bar.color));

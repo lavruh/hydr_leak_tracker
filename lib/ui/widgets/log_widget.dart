@@ -4,7 +4,10 @@ import 'package:hydr_leak_tracker/domain/editor_provider.dart';
 import 'package:hydr_leak_tracker/domain/log.dart';
 import 'package:hydr_leak_tracker/domain/log_entry.dart';
 import 'package:hydr_leak_tracker/domain/log_utils.dart';
-import 'package:hydr_leak_tracker/domain/settings_provider.dart';
+import 'package:hydr_leak_tracker/domain/settings/settings_discharging_graphic.dart';
+import 'package:hydr_leak_tracker/domain/settings/settings_dredging_graphic.dart';
+import 'package:hydr_leak_tracker/domain/settings/settings_empty_graphic.dart';
+import 'package:hydr_leak_tracker/domain/settings/settings_loaded_graphic.dart';
 import 'package:hydr_leak_tracker/ui/widgets/log_entry_widget.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 

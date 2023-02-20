@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydr_leak_tracker/domain/log_analyse_provider.dart';
 import 'package:hydr_leak_tracker/domain/log_entry.dart';
@@ -6,13 +7,14 @@ import 'package:hydr_leak_tracker/ui/widgets/calculated_value.dart';
 final entry = LogEntry.empty();
 final data = List.generate(5, (index) {
   final val = (100 - ((index + 1) * (index % 2 == 0 ? 10 : 20))).toDouble();
-  return entry.copyWith(volume: val);
+  final date = DateTime(2023, 1, index + 1);
+  return entry.copyWith(volume: val, date: date);
 });
 
 main() {
   test('average', () {
     expect(LogAnalyse.average(data),
-        CalculatedValue(date: data.last.date, value: 58));
+        CalculatedValue(date: data.first.date, value: 58));
   });
 
   test('loses', () {
@@ -27,6 +29,15 @@ main() {
   test('average loses', () {
     final loses = LogAnalyse.calcLosesPerEntry(data);
     final res = LogAnalyse.average(loses);
-    expect(res, CalculatedValue(date: data.last.date, value: -10));
+    expect(res, CalculatedValue(date: data[1].date, value: -10));
+  });
+
+  test('average loses per day', () {
+    final days = DateTimeRange(start: data.first.date, end: data.last.date)
+        .duration
+        .inDays;
+    expect(days, 4);
+    expect(LogAnalyse.averageLosesPerDay(data),
+        CalculatedValue(date: data.last.date, value: 58 / 4));
   });
 }
