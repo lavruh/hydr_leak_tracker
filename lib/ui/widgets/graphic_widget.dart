@@ -79,10 +79,6 @@ class GraphicWidget extends ConsumerWidget {
                         data += ' \n ∆ ${delta.toStringAsFixed(1)}';
                       }
                       if (e.spotIndex == spots.length - 1) {
-                        final averageLoses = LogAnalyse.average(
-                            LogAnalyse.calcLosesPerEntry(spots));
-                        data +=
-                            "\n Average ∆ ${averageLoses.value.toStringAsFixed(1)}";
                         final averageLosesPerDay = LogAnalyse.average(
                             LogAnalyse.calcLosesPerEntry(spots));
                         data +=

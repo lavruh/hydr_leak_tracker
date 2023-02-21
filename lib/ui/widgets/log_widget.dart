@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hydr_leak_tracker/domain/datetime_filtered_log_provider.dart';
 import 'package:hydr_leak_tracker/domain/editor_provider.dart';
-import 'package:hydr_leak_tracker/domain/log.dart';
 import 'package:hydr_leak_tracker/domain/log_entry.dart';
 import 'package:hydr_leak_tracker/domain/log_utils.dart';
 import 'package:hydr_leak_tracker/domain/settings/settings_discharging_graphic.dart';
@@ -18,7 +18,7 @@ class LogWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final log = ref.watch(logProvider);
+    final log = ref.watch(filteredByDateLog);
     final scrollController = ref.read(logScrollControllerProvider);
     return ScrollablePositionedList.builder(
       itemScrollController: scrollController,
