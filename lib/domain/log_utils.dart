@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hydr_leak_tracker/domain/log.dart';
+import 'package:hydr_leak_tracker/domain/datetime_filtered_log_provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 final logScrollControllerProvider =
@@ -14,7 +14,9 @@ class LogSelectedItemNotifier extends StateNotifier<int> {
   final StateNotifierProviderRef ref;
 
   selectItem(int logEntryDateMs) {
-    final index = ref.read(logProvider.notifier).getEntryIndex(logEntryDateMs);
+    final index = ref.read(filteredByDateLog).indexWhere((element) {
+      return element.date.millisecondsSinceEpoch == logEntryDateMs;
+    });
     if (index != -1) {
       ref
           .read(logScrollControllerProvider)

@@ -21,21 +21,15 @@ class FilterDateTimeRangeNotifier extends StateNotifier<DateTimeRange> {
     state = val;
   }
 
-  setStartDateTime(DateTime val) {}
-  setEndDateTime(DateTime? val) {
-    final d = val ?? DateTime.now();
-    if (d.millisecondsSinceEpoch > state.start.millisecondsSinceEpoch) {
-      state = DateTimeRange(start: state.start, end: d);
-    }
-  }
 }
 
 final filteredByDateLog = StateProvider<List<LogEntry>>((ref) {
   final log = ref.watch(logProvider);
   final range = ref.watch(filterDateTimeRangeProvider);
+  final end = DateTime(range.end.year, range.end.month, range.end.day, 23, 59);
   return log
       .where((e) =>
           e.date.millisecondsSinceEpoch >= range.start.millisecondsSinceEpoch &&
-          e.date.millisecondsSinceEpoch <= range.end.millisecondsSinceEpoch)
+          e.date.millisecondsSinceEpoch <= end.millisecondsSinceEpoch)
       .toList();
 });
