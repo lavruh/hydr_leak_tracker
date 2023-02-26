@@ -19,7 +19,7 @@ class SettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: Padding(
-        padding: const EdgeInsets.all(100.0),
+        padding: const EdgeInsets.symmetric(horizontal: 100),
         child: Form(
           key: formKey,
           child: ListView(
@@ -45,6 +45,19 @@ class SettingsScreen extends ConsumerWidget {
                           alarmLevelValidator: filePathValidator,
                           onSubmited: (val) =>
                               ref.read(logFilePath.notifier).setValue(val)),
+                      SettingInputWidget(
+                          formKey: formKey,
+                          value: ref.watch(ullageSensorOffset).toString(),
+                          lableText: 'Ullage sensor offset [mm]',
+                          alarmLevelValidator: intTypeValidator,
+                          onSubmited: (val) {
+                            final offset = int.tryParse(val);
+                            if (offset != null) {
+                              ref
+                                  .read(ullageSensorOffset.notifier)
+                                  .setValue(offset);
+                            }
+                          }),
                     ],
                   ),
                 ),

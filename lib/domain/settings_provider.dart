@@ -24,6 +24,16 @@ StateNotifierProvider<SettingNotifier<String>, String>((ref) {
   );
 });
 
+final ullageSensorOffset =
+StateNotifierProvider<SettingNotifier<int>, int>((ref) {
+  final preferences = ref.watch(settingsProvider);
+  return SettingNotifier(
+    preferences: preferences.value,
+    key: 'ullageSensorOffset',
+    defaultVal: 0,
+  );
+});
+
 
 
 class SettingNotifier<T> extends StateNotifier<T> {

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydr_leak_tracker/domain/log.dart';
 import 'package:hydr_leak_tracker/domain/log_entry.dart';
+import 'package:hydr_leak_tracker/domain/settings_provider.dart';
 import 'package:hydr_leak_tracker/domain/sounding_table_provider.dart';
 
 final editorProvider = StateNotifierProvider<EditorNotifier, LogEntry?>((ref) {
@@ -62,7 +63,8 @@ class EditorNotifier extends StateNotifier<LogEntry?> {
   }
 
   calculateVolumeByUllage({required int ullage}) {
-    calculateVolume(sounding: convertSoundingUllage(ullage));
+    final distance = ullage + ref.watch(ullageSensorOffset) as int;
+    calculateVolume(sounding: convertSoundingUllage(distance));
   }
 
   int convertSoundingUllage(int val) {
